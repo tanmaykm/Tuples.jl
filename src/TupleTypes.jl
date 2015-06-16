@@ -2,17 +2,15 @@ module TupleTypes
 
 import Base: isvatuple
 
-
-check{T}(::Type{T}) = (T===Tuple || T===NTuple) && throw(ArgumentError("parameters of $T are undefined"))
-# (Needs the parameters: https://github.com/JuliaLang/julia/issues/11712)
+check(T) = (T===Tuple || T===NTuple) && throw(ArgumentError("parameters of $T are undefined"))
 
 # Might as well use this for all datatypes
-function getpara{TT}(T::Type{TT})
+function getpara(T::Type)
     check(T)
     T.parameters # just return the svec, avoids allocations
 end
 
-function getpara{TT}(T::Type{TT}, i::Integer)
+function getpara(T::Type, i::Integer)
     check(T)
     L = length(T.parameters)
     if isvatuple(T) && i >= L
@@ -23,7 +21,7 @@ function getpara{TT}(T::Type{TT}, i::Integer)
     end
 end
 
-getpara{TT,I<:Integer}(T::Type{TT}, is::AbstractVector{I}) = Base.svec([getpara(T,i) for i in is]...)
+getpara{I<:Integer}(T::Type, is::AbstractVector{I}) = Base.svec([getpara(T,i) for i in is]...)
 
 function concatenate{T<:Tuple, S<:Tuple}(::Type{T}, ::Type{S})
     check(T); check(S); 
