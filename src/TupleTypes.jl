@@ -23,6 +23,8 @@ function getpara{T}(::Type{T}, i::Integer)
     end
 end
 
+getpara{T}(::Type{T}, is::Integer...) = Base.svec([getpara(T,i) for i in is]...)
+
 function concatenate{T<:Tuple, S<:Tuple}(::Type{T}, ::Type{S})
     check(T); check(S); 
     isvatuple(T) && throw(ArgumentError("cannot concatenate the varargs tuple $T with $S"))
