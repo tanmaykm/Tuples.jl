@@ -17,12 +17,12 @@ import TupleTypes: getpara, concatenate
 @test getpara(Tuple{1,2,3}, 1) === 1
 @test getpara(Tuple{1,2,3}, 2) === 2
 @test getpara(Tuple{1,2,3}, 3) === 3
-@test getpara(Tuple{1,2,3}, 3, 2) === Base.svec(3,2)
+@test getpara(Tuple{1,2,3}, 2:3) === Base.svec(2,3)
 @test_throws BoundsError getpara(Tuple{1,2,3}, 0)
 @test_throws BoundsError getpara(Tuple{1,2,3}, 4)
 @test getpara(Tuple{Int, String}, 1) === Int
 @test getpara(Tuple{Int, String}, 2) === String
-@test getpara(Tuple{Int, String}, 2,1) === Base.svec(String,Int)
+@test getpara(Tuple{Int, String}, [2,1]) === Base.svec(String,Int)
 @test_throws BoundsError getpara(Tuple{Int, String}, 0)
 @test_throws BoundsError getpara(Tuple{Int, String}, 3)
 @test_throws ArgumentError getpara(Tuple, 1)
@@ -30,14 +30,21 @@ import TupleTypes: getpara, concatenate
 @test getpara(Tuple{Vararg{Int}}, 1) === Int
 @test getpara(Tuple{Vararg{Int}}, 1000) === Int
 @test getpara(Tuple{Vararg{Int}}, 10^10) === Int
-@test getpara(Tuple{Vararg{Int}}, 10^10, 10^10+1) === Base.svec(Int,Int)
+@test getpara(Tuple{Vararg{Int}}, [10^10, 10^10+1]) === Base.svec(Int,Int)
 @test_throws BoundsError getpara(Tuple{Vararg{Int}}, 0)
 @test getpara(Tuple{Int, Vararg{String}}, 1) === Int
 @test getpara(Tuple{Int, Vararg{String}}, 2) === String
 @test getpara(Tuple{Int, Vararg{String}}, 3) === String
-@test getpara(Tuple{Int, Vararg{String}}, 1,3) === Base.svec(Int,String)
+@test getpara(Tuple{Int, Vararg{String}}, [1,3]) === Base.svec(Int,String)
 @test_throws BoundsError getpara(Tuple{Int, Vararg{String}}, 0)
 
+# bug in Julia https://github.com/JuliaLang/julia/issues/11725
+f{T<:Integer}(::T, ::T) = 1
+fm = first(methods(f))
+g{I<:Integer}(::I, ::I) = 1
+gm = first(methods(g))
+@test getpara(fm.sig, 1)==fm.sig.parameters[1]
+@test getpara(gm.sig, 1)==gm.sig.parameters[1]
 
 
 ## Concatenate

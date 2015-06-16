@@ -7,12 +7,12 @@ check{T}(::Type{T}) = (T===Tuple || T===NTuple) && throw(ArgumentError("paramete
 # (Needs the parameters: https://github.com/JuliaLang/julia/issues/11712)
 
 # Might as well use this for all datatypes
-function getpara{T}(::Type{T})
+function getpara{TT}(T::Type{TT})
     check(T)
     T.parameters # just return the svec, avoids allocations
 end
 
-function getpara{T}(::Type{T}, i::Integer)
+function getpara{TT}(T::Type{TT}, i::Integer)
     check(T)
     L = length(T.parameters)
     if isvatuple(T) && i >= L
@@ -23,7 +23,7 @@ function getpara{T}(::Type{T}, i::Integer)
     end
 end
 
-getpara{T}(::Type{T}, is::Integer...) = Base.svec([getpara(T,i) for i in is]...)
+getpara{TT,I<:Integer}(T::Type{TT}, is::AbstractVector{I}) = Base.svec([getpara(T,i) for i in is]...)
 
 function concatenate{T<:Tuple, S<:Tuple}(::Type{T}, ::Type{S})
     check(T); check(S); 
