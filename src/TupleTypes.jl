@@ -2,15 +2,16 @@ module TupleTypes
 
 import Base: isvatuple
 
-function parameters{T<:Tuple}(::Type{T})
-    if isvatuple(T) || T===Tuple || T===NTuple
-        throw(ArgumentError("elements of $T are undefined"))
-    end
-    (T.parameters...)
+check(T) = (T===Tuple || T===NTuple) && throw(ArgumentError("parameters of $T are undefined"))
+
+# Might as well use this for all datatypes
+function getpara(T::Type)
+    check(T)
+    T.parameters # just return the svec, avoids allocations
 end
 
-function getparam{T<:Tuple}(::Type{T}, i::Integer)
-    (T===Tuple || T===NTuple) && throw(ArgumentError("parameters of $T are undefined"))
+function getpara(T::Type, i::Integer)
+    check(T)
     L = length(T.parameters)
     if isvatuple(T) && i >= L
         T.parameters[end].parameters[1]
@@ -20,8 +21,10 @@ function getparam{T<:Tuple}(::Type{T}, i::Integer)
     end
 end
 
+getpara{I<:Integer}(T::Type, is::AbstractVector{I}) = Base.svec([getpara(T,i) for i in is]...)
+
 function concatenate{T<:Tuple, S<:Tuple}(::Type{T}, ::Type{S})
-    (T===Tuple || T===NTuple || S===Tuple || S===NTuple) && throw(ArgumentError("parameters of $T or $S is undefined"))
+    check(T); check(S); 
     isvatuple(T) && throw(ArgumentError("cannot concatenate the varargs tuple $T with $S"))
     Tuple{T.parameters..., S.parameters...}
 end
