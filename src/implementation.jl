@@ -35,7 +35,7 @@ for p=0:N
     end
     
     # length
-    @eval tlength{$(params...)}(t::Type{Tuple{$(params...)}}) = $N
+    @eval tlength{$(params...)}(t::Type{Tuple{$(params...)}}) = $p
 end
 
 
@@ -50,7 +50,7 @@ function tlength(T::Type)
     length(T.parameters)
 end
 
-
+tgetindex{i}(T::Type, ::Type{Val{i}}) = tgetindex(T, i)
 function tgetindex(T::Type, i::Integer)
     check(T)
     L = length(T.parameters)
