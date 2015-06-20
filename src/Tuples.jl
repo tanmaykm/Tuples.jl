@@ -1,4 +1,4 @@
-baremodule Types
+baremodule Tuples
 using Base
 
 # Since we're defining our own getindex and length methods to operate on types
