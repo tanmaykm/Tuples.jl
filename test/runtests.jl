@@ -21,6 +21,8 @@ using Base.Test
 @test TupleTypes.getindex(Tuple{1,2,3}, 2:3) === Base.svec(2,3)
 @test_throws BoundsError TupleTypes.getindex(Tuple{1,2,3}, 0)
 @test_throws BoundsError TupleTypes.getindex(Tuple{1,2,3}, 4)
+@test_throws BoundsError TupleTypes.getindex(Tuple{1,2,3}, Val{0})
+@test_throws BoundsError TupleTypes.getindex(Tuple{1,2,3}, Val{4})
 @test TupleTypes.getindex(Tuple{Int, String}, 1) === Int
 @test TupleTypes.getindex(Tuple{Int, String}, 2) === String
 @test TupleTypes.getindex(Tuple{Int, String}, Val{1}) === Int
@@ -28,6 +30,8 @@ using Base.Test
 @test TupleTypes.getindex(Tuple{Int, String}, [2,1]) === Base.svec(String,Int)
 @test_throws BoundsError TupleTypes.getindex(Tuple{Int, String}, 0)
 @test_throws BoundsError TupleTypes.getindex(Tuple{Int, String}, 3)
+@test_throws BoundsError TupleTypes.getindex(Tuple{Int, String}, Val{0})
+@test_throws BoundsError TupleTypes.getindex(Tuple{Int, String}, Val{3})
 @test_throws ArgumentError TupleTypes.getindex(Tuple, 1)
 @test_throws ArgumentError TupleTypes.getindex(NTuple, 1)
 @test TupleTypes.getindex(Tuple{Vararg{Int}}, Val{1}) === Int
@@ -35,6 +39,7 @@ using Base.Test
 @test TupleTypes.getindex(Tuple{Vararg{Int}}, Val{10^10}) === Int
 @test TupleTypes.getindex(Tuple{Vararg{Int}}, [10^10, 10^10+1]) === Base.svec(Int,Int)
 @test_throws BoundsError TupleTypes.getindex(Tuple{Vararg{Int}}, 0)
+@test_throws BoundsError TupleTypes.getindex(Tuple{Vararg{Int}}, Val{0})
 @test TupleTypes.getindex(Tuple{Int, Vararg{String}}, 1) === Int
 @test TupleTypes.getindex(Tuple{Int, Vararg{String}}, 2) === String
 @test TupleTypes.getindex(Tuple{Int, Vararg{String}}, 3) === String
@@ -43,6 +48,7 @@ using Base.Test
 @test TupleTypes.getindex(Tuple{Int, Vararg{String}}, Val{3}) === String
 @test TupleTypes.getindex(Tuple{Int, Vararg{String}}, [1,3]) === Base.svec(Int,String)
 @test_throws BoundsError TupleTypes.getindex(Tuple{Int, Vararg{String}}, 0)
+@test_throws BoundsError TupleTypes.getindex(Tuple{Int, Vararg{String}}, Val{0})
 
 # bug in Julia https://github.com/JuliaLang/julia/issues/11725
 f{T<:Integer}(::T, ::T) = 1
