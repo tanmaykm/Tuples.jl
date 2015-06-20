@@ -70,5 +70,8 @@ function concatenate{T<:Tuple, S<:Tuple}(::Type{T}, ::Type{S})
     Tuple{T.parameters..., S.parameters...}
 end
 
+## Allow constructing Tuples like tuples with NTuple (akin to ntuple)
+Base.call(::Type{NTuple}, f, n::Integer) = Tuple{ntuple(f, n)...}
+
 
 end # module

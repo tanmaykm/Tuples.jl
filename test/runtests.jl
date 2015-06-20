@@ -85,3 +85,10 @@ gm = first(methods(g))
 @test Types.length(Tuple{Int8, Int16,Vararg{String}}) === 3
 @test Types.length(Tuple{Int8, Int16, Int32,Vararg{String}}) === 4
 @test Types.length(Tuple{Int8, Int16, Int32, Int64,Vararg{String}}) === 5
+
+
+# Test NTuple
+@test NTuple(i->Val{i}, 1) === Tuple{Val{1}}
+@test NTuple(i->Val{i}, 2) === Tuple{Val{1}, Val{2}}
+@test NTuple(i->Val{i}, 3) === Tuple{Val{1}, Val{2}, Val{3}}
+@test NTuple(i->Val{i}, 4) === Tuple{Val{1}, Val{2}, Val{3}, Val{4}}
