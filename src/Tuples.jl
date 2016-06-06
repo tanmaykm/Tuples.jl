@@ -1,5 +1,6 @@
 baremodule Tuples
 using Base
+using Compat
 
 # Since we're defining our own getindex and length methods to operate on types
 # separately, it's difficult to then use Base's methods at the same time.

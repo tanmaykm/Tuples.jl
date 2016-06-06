@@ -8,7 +8,7 @@ check(T) = (T===Tuple || T===NTuple) && throw(ArgumentError("parameters of $T ar
 const N=4
 ie = :()
 for p=0:N
-    params = ntuple(i->symbol(:P,i), p)
+    params = ntuple(i->Symbol(:P,i), p)
     global tgetindex, tlength, concatenate
 
     # Accessing by a constant value
@@ -30,7 +30,7 @@ for p=0:N
 
     # concatenation
     for q=0:N
-        qarams = ntuple(i->symbol(:Q,i), q)
+        qarams = ntuple(i->Symbol(:Q,i), q)
         @eval concatenate{$(params...), $(qarams...)}(::Type{Tuple{$(params...)}},::Type{Tuple{$(qarams...)}}) = Tuple{$(params...), $(qarams...)}
     end
     
@@ -71,7 +71,7 @@ function concatenate{T<:Tuple, S<:Tuple}(::Type{T}, ::Type{S})
 end
 
 ## Allow constructing Tuples like tuples with NTuple (akin to ntuple)
-Base.call(::Type{NTuple}, f, n::Integer) = Tuple{ntuple(f, n)...}
+Base.NTuple(f, n::Integer) = Tuple{ntuple(f, n)...}
 
 
 end # module
